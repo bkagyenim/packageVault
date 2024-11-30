@@ -1,37 +1,37 @@
-{
-  "name": "packagevault",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "dev": "vite --port=3001",
-    "build": "vite build",
-    "serve": "vite preview",
-    "start": "vite"
-  },
-  "devDependencies": {
-    "@tanstack/router-devtools": "^1.79.0",
-    "@tanstack/router-plugin": "^1.79.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "vite": "^5.4.8"
-  },
-  "dependencies": {
-    "@tanstack/react-router": "^1.79.0",
-    "chart.js": "^4.4.6",
-    "firebase": "^11.0.1",
-    "i18next": "^23.16.5",
-    "i18next-http-backend": "^2.6.2",
-    "react": "^18.3.1",
-    "react-chartjs-2": "^5.2.0",
-    "react-data-table-component": "^7.6.2",
-    "react-dom": "^18.3.1",
-    "react-i18next": "^15.1.1",
-    "react-select": "^5.8.3",
-    "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.6.13",
-    "twilio": "^5.3.6"
-  }
-}
+{ 
+  "name": "packagevault", 
+  "version": "0.0.0", 
+  "private": true, 
+  "type": "module", 
+  "scripts": { 
+    "typecheck": "tsc --noEmit", 
+    "dev": "vite --port=3001", 
+    "build": "vite build", 
+    "serve": "vite preview", 
+    "start": "vite" 
+  }, 
+  "devDependencies": { 
+    "@tanstack/router-devtools": "^1.79.0", 
+    "@tanstack/router-plugin": "^1.79.0", 
+    "@types/react": "^18.3.3", 
+    "@types/react-dom": "^18.3.0", 
+    "@vitejs/plugin-react": "^4.3.2", 
+    "vite": "^5.4.8" 
+  }, 
+  "dependencies": { 
+    "@tanstack/react-router": "^1.79.0", 
+    "chart.js": "^4.4.6", 
+    "firebase": "^11.0.1", 
+    "i18next": "^23.16.5", 
+    "i18next-http-backend": "^2.6.2", 
+    "react": "^18.3.1", 
+    "react-chartjs-2": "^5.2.0", 
+    "react-data-table-component": "^7.6.2", 
+    "react-dom": "^18.3.1", 
+    "react-i18next": "^15.1.1", 
+    "react-select": "^5.8.3", 
+    "sweetalert": "^2.1.2", 
+    "sweetalert2": "^11.6.13", 
+    "twilio": "^5.3.6" 
+  } 
+} 
