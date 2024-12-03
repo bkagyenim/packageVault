@@ -9,18 +9,12 @@ import Puralator from "../assets/img/partner-img/2.png";
 import FedEx from "../assets/img/partner-img/3.png";
 import { db } from "../firebaseConfig";
 
+import firebaseConfig from "../firebaseConfig";
+
 // Initialize Firebase
 import { initializeApp } from "firebase/app";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCLmmn_vdUNvCYlhQUCAmpGk0iagD-Is-M",
-  authDomain: "packagevault-67f49.firebaseapp.com",
-  projectId: "packagevault-67f49",
-  storageBucket: "packagevault-67f49.firebasestorage.app",
-  messagingSenderId: "905264502790",
-  appId: "1:905264502790:web:ebf38aa7c313768c21cb87",
-  measurementId: "G-PT52BT3N1D",
-};
+
 
 initializeApp(firebaseConfig);
 
