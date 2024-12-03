@@ -2,17 +2,22 @@ import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import Swal from "sweetalert2";
-
-// Firebase imports
+import { z } from "zod";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import firebaseConfig from "../firebaseConfig";
 
-
-
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const db = getFirestore();
+
+// Create zod schema for form validation
+const contactFormSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }),
+  email: z.string().email({ message: "Invalid email address." }),
+  subject: z.string().min(1, { message: "Subject is required." }),
+  message: z.string().min(1, { message: "Message is required." }),
+});
 
 export const Route = createFileRoute("/contact")({
   component: RouteComponent,
@@ -27,7 +32,9 @@ function RouteComponent() {
   });
 
   // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -39,27 +46,20 @@ function RouteComponent() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { name, email, subject, message } = formData;
-
-    // Validate fields
-    if (!name || !email || !subject || !message) {
-      Swal.fire({
-        icon: "error",
-        title: "Missing Fields",
-        text: "Please fill in all fields before submitting!",
-      });
-      return;
-    }
-
     try {
-      // Add data to the `contact` collection
+      // Validate form data with zod
+      contactFormSchema.parse(formData);
+
+      const { name, email, subject, message } = formData;
+
+      // Add data to the `contact` collection in Firestore
       const contactCollection = collection(db, "contact");
       await addDoc(contactCollection, {
         name,
         email,
         subject,
         message,
-        timestamp: new Date(), // Optional: Add a timestamp
+        timestamp: new Date(),
       });
 
       // Success alert
@@ -68,16 +68,25 @@ function RouteComponent() {
         title: "Message Sent",
         text: "Your message has been sent successfully!",
       }).then(() => {
-        // Refresh page
-        window.location.reload();
+        // Reset form and refresh page
+        setFormData({ name: "", email: "", subject: "", message: "" });
       });
     } catch (error) {
-      console.error("Error saving contact message:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to send your message. Please try again later.",
-      });
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: error.errors.map((err) => err.message).join("\n"),
+        });
+      } else {
+        console.error("Error saving contact message:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to send your message. Please try again later.",
+        });
+      }
     }
   };
 
@@ -86,9 +95,7 @@ function RouteComponent() {
       {/* Header Area */}
       <div className="header-area" id="headerArea">
         <div className="container">
-          {/* Header Content */}
           <div className="header-content position-relative d-flex align-items-center justify-content-between">
-            {/* Back Button */}
             <div className="back-button">
               <Link to="/">
                 <i className="bi bi-arrow-left-short"></i>
@@ -104,7 +111,6 @@ function RouteComponent() {
           <div className="card mb-3">
             <div className="card-body">
               <h5 className="mb-3">Write to us</h5>
-
               <div className="contact-form">
                 <form onSubmit={handleSubmit}>
                   <div className="form-group mb-3">
