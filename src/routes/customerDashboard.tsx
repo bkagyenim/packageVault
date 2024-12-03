@@ -8,6 +8,7 @@ import Amazon from "../assets/img/partner-img/1.png";
 import Puralator from "../assets/img/partner-img/2.png";
 import FedEx from "../assets/img/partner-img/3.png";
 import { db } from "../firebaseConfig";
+import Footer from "./footer";
 
 import firebaseConfig from "../firebaseConfig";
 
@@ -307,38 +308,8 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="footer-nav-area" id="footerNav">
-        <div className="container px-0">
-          <div className="footer-nav position-relative">
-            <ul className="h-100 d-flex align-items-center justify-content-between ps-0">
-              <li className="active">
-                <Link to="/customerDashboard">
-                  <i className="bi bi-house"></i>
-                  <span>Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/customerPending">
-                  <i className="bi bi-folder2-open"></i>
-                  <span>Pending</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/customerCompleted">
-                  <i className="bi bi-folder-check"></i>
-                  <span>Collected</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/customerSupport">
-                  <i className="bi bi-chat-dots"></i>
-                  <span>Support</span>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      {/*Footer*/}
+      <Footer/>
     </>
   );
 }
