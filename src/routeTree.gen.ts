@@ -17,6 +17,7 @@ import { Route as StaffDashboardImport } from './routes/staffDashboard'
 import { Route as StaffImport } from './routes/staff'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
+import { Route as FooterImport } from './routes/footer'
 import { Route as CustomerSupportImport } from './routes/customerSupport'
 import { Route as CustomerPendingImport } from './routes/customerPending'
 import { Route as CustomerDashboardImport } from './routes/customerDashboard'
@@ -62,6 +63,12 @@ const RegisterRoute = RegisterImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FooterRoute = FooterImport.update({
+  id: '/footer',
+  path: '/footer',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -186,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerSupportImport
       parentRoute: typeof rootRoute
     }
+    '/footer': {
+      id: '/footer'
+      path: '/footer'
+      fullPath: '/footer'
+      preLoaderRoute: typeof FooterImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -243,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/customerDashboard': typeof CustomerDashboardRoute
   '/customerPending': typeof CustomerPendingRoute
   '/customerSupport': typeof CustomerSupportRoute
+  '/footer': typeof FooterRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/staff': typeof StaffRoute
@@ -261,6 +276,7 @@ export interface FileRoutesByTo {
   '/customerDashboard': typeof CustomerDashboardRoute
   '/customerPending': typeof CustomerPendingRoute
   '/customerSupport': typeof CustomerSupportRoute
+  '/footer': typeof FooterRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/staff': typeof StaffRoute
@@ -280,6 +296,7 @@ export interface FileRoutesById {
   '/customerDashboard': typeof CustomerDashboardRoute
   '/customerPending': typeof CustomerPendingRoute
   '/customerSupport': typeof CustomerSupportRoute
+  '/footer': typeof FooterRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/staff': typeof StaffRoute
@@ -300,6 +317,7 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
+    | '/footer'
     | '/login'
     | '/register'
     | '/staff'
@@ -317,6 +335,7 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
+    | '/footer'
     | '/login'
     | '/register'
     | '/staff'
@@ -334,6 +353,7 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
+    | '/footer'
     | '/login'
     | '/register'
     | '/staff'
@@ -353,6 +373,7 @@ export interface RootRouteChildren {
   CustomerDashboardRoute: typeof CustomerDashboardRoute
   CustomerPendingRoute: typeof CustomerPendingRoute
   CustomerSupportRoute: typeof CustomerSupportRoute
+  FooterRoute: typeof FooterRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   StaffRoute: typeof StaffRoute
@@ -371,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   CustomerDashboardRoute: CustomerDashboardRoute,
   CustomerPendingRoute: CustomerPendingRoute,
   CustomerSupportRoute: CustomerSupportRoute,
+  FooterRoute: FooterRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   StaffRoute: StaffRoute,
@@ -398,6 +420,7 @@ export const routeTree = rootRoute
         "/customerDashboard",
         "/customerPending",
         "/customerSupport",
+        "/footer",
         "/login",
         "/register",
         "/staff",
@@ -432,6 +455,9 @@ export const routeTree = rootRoute
     },
     "/customerSupport": {
       "filePath": "customerSupport.tsx"
+    },
+    "/footer": {
+      "filePath": "footer.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
