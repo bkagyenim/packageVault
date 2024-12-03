@@ -11,12 +11,12 @@ import firebaseConfig from "../firebaseConfig";
 initializeApp(firebaseConfig);
 const db = getFirestore();
 
-// Create zod schema for form validation
+// Create Zod schema for form validation
 const contactFormSchema = z.object({
-  name: z.string().min(1, { message: "Name is required." }),
-  email: z.string().email({ message: "Invalid email address." }),
-  subject: z.string().min(1, { message: "Subject is required." }),
-  message: z.string().min(1, { message: "Message is required." }),
+  name: z.string().min(1, "Name is required."),
+  email: z.string().email("Invalid email address."),
+  subject: z.string().min(1, "Subject is required."),
+  message: z.string().min(1, "Message is required."),
 });
 
 export const Route = createFileRoute("/contact")({
@@ -47,18 +47,13 @@ function RouteComponent() {
     e.preventDefault();
 
     try {
-      // Validate form data with zod
-      contactFormSchema.parse(formData);
-
-      const { name, email, subject, message } = formData;
+      // Validate form data using Zod
+      const validData = contactFormSchema.parse(formData);
 
       // Add data to the `contact` collection in Firestore
       const contactCollection = collection(db, "contact");
       await addDoc(contactCollection, {
-        name,
-        email,
-        subject,
-        message,
+        ...validData,
         timestamp: new Date(),
       });
 
@@ -67,19 +62,20 @@ function RouteComponent() {
         icon: "success",
         title: "Message Sent",
         text: "Your message has been sent successfully!",
-      }).then(() => {
-        // Reset form and refresh page
-        setFormData({ name: "", email: "", subject: "", message: "" });
       });
+
+      // Reset form fields
+      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Handle validation errors
+        // Handle Zod validation errors
         Swal.fire({
           icon: "error",
           title: "Validation Error",
           text: error.errors.map((err) => err.message).join("\n"),
         });
       } else {
+        // Handle Firestore or other errors
         console.error("Error saving contact message:", error);
         Swal.fire({
           icon: "error",
