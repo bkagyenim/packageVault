@@ -1,15 +1,15 @@
-import * as React from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import * as React from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/footer')({
-  component: AboutComponent,
-})
+  component: FooterComponent,
+});
 
-function AboutComponent() {
+function FooterComponent() {
   return (
     <>
-     {/* Footer Nav */}
-     <div className="footer-nav-area" id="footerNav">
+      {/* Footer Nav */}
+      <div className="footer-nav-area" id="footerNav">
         <div className="container px-0">
           <div className="footer-nav position-relative">
             <ul className="h-100 d-flex align-items-center justify-content-between ps-0">
@@ -42,6 +42,7 @@ function AboutComponent() {
         </div>
       </div>
     </>
-
-  )
+  );
 }
+
+export default FooterComponent;
