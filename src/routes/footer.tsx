@@ -38,8 +38,4 @@ const Footer: React.FC = () => {
   );
 };
 
-export const Route = () => (
-  <Footer />
-);
-
 export default Footer;
