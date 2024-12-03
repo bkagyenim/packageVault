@@ -5,6 +5,7 @@ import ProfileImage from "../assets/img/bg-img/2.png";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Footer from "./footer";
+import { z } from "zod";
 
 import firebaseConfig from "../firebaseConfig";
 // Firebase imports
@@ -12,11 +13,17 @@ import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 
-
-
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const db = getFirestore();
+
+// Create Zod schema for form validation
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  email: z.string().email("Invalid email address."),
+  subject: z.string().min(1, "Subject is required."),
+  message: z.string().min(1, "Message is required."),
+});
 
 export const Route = createFileRoute("/customerSupport")({
   component: RouteComponent,
@@ -66,26 +73,14 @@ function RouteComponent() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { name, email, subject, message } = formData;
-
-    // Validate fields
-    if (!name || !email || !subject || !message) {
-      Swal.fire({
-        icon: "error",
-        title: "Missing Fields",
-        text: "Please fill in all fields before submitting!",
-      });
-      return;
-    }
-
     try {
+      // Validate form data using Zod
+      const validData = contactFormSchema.parse(formData);
+
       // Add data to the `contact` collection
       const contactCollection = collection(db, "contact");
       await addDoc(contactCollection, {
-        name,
-        email,
-        subject,
-        message,
+        ...validData,
         timestamp: new Date(), // Optional: Add timestamp
       });
 
@@ -95,16 +90,26 @@ function RouteComponent() {
         title: "Message Sent",
         text: "Your message has been sent successfully!",
       }).then(() => {
-        // Refresh page
-        window.location.reload();
+        // Reset form fields
+        setFormData({ name: "", email: "", subject: "", message: "" });
       });
     } catch (error) {
-      console.error("Error saving contact message:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to send your message. Please try again later.",
-      });
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: error.errors.map((err) => err.message).join("\n"),
+        });
+      } else {
+        // Handle Firestore or other errors
+        console.error("Error saving contact message:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to send your message. Please try again later.",
+        });
+      }
     }
   };
 
@@ -286,8 +291,8 @@ function RouteComponent() {
         </div>
       </div>
 
-        {/*Footer*/}
-        <Footer/>
+      {/* Footer */}
+      <Footer />
     </>
   );
 }
