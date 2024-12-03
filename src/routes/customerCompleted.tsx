@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import HeaderLogo from "../assets/img/core-img/logo.png";
 import ProfileImage from "../assets/img/bg-img/2.png";
 import { useState, useEffect } from "react";
+import Footer from "./footer";
+import firebaseConfig from "../firebaseConfig";
 
 // Firebase imports
 import { initializeApp } from "firebase/app";
@@ -18,16 +20,7 @@ import {
   doc,
 } from "firebase/firestore";
 
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCLmmn_vdUNvCYlhQUCAmpGk0iagD-Is-M",
-  authDomain: "packagevault-67f49.firebaseapp.com",
-  projectId: "packagevault-67f49",
-  storageBucket: "packagevault-67f49.firebasestorage.app",
-  messagingSenderId: "905264502790",
-  appId: "1:905264502790:web:ebf38aa7c313768c21cb87",
-  measurementId: "G-PT52BT3N1D",
-};
+
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
@@ -280,38 +273,7 @@ function RouteComponent() {
       </div>
 
        {/* Footer Nav */}
-       <div className="footer-nav-area" id="footerNav">
-        <div className="container px-0">
-          <div className="footer-nav position-relative">
-            <ul className="h-100 d-flex align-items-center justify-content-between ps-0">
-              <li className="active">
-                <Link to="/customerDashboard">
-                  <i className="bi bi-house"></i>
-                  <span>Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/customerPending">
-                  <i className="bi bi-folder2-open"></i>
-                  <span>Pending</span>
-                </Link>
-              </li>
-              <li>
-              <Link to="/customerCompleted">
-                  <i className="bi bi-folder-check"></i>
-                  <span>Collected</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/customerSupport">
-                  <i className="bi bi-chat-dots"></i>
-                  <span>Support</span>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+       <Footer/>
 
 
     </>
