@@ -12,20 +12,23 @@ function RouteComponent() {
   const [user, setUser] = useState<{ username: string; email: string } | null>(null);
 
   useEffect(() => {
-    // Retrieve user details from localStorage
     const storedUser = localStorage.getItem("user");
+    console.log("Retrieved user from localStorage:", storedUser);
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
+        console.log("Parsed user data:", parsedUser);
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing user data from localStorage:", error);
         setUser(null);
       }
     } else {
+      console.log("No user data found in localStorage.");
       setUser(null);
     }
   }, []);
+  
 
   if (!user) {
     return (

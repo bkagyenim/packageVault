@@ -29,6 +29,7 @@ function LoginComponent() {
   
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
+        console.log("Fetched user document:", userData);
   
         // Store user details in localStorage
         localStorage.setItem(
@@ -38,6 +39,10 @@ function LoginComponent() {
             email: userData.email,
           })
         );
+        console.log("User data stored in localStorage:", {
+          username: userData.username,
+          email: userData.email,
+        });
   
         Swal("Success", "Login successful!", "success");
         navigate({ to: "/customerDashboard" });
@@ -49,6 +54,7 @@ function LoginComponent() {
       Swal("Error", "An unexpected error occurred. Please try again.", "error");
     }
   };
+  
   
   const handleGoogleSignIn = async () => {
     try {
