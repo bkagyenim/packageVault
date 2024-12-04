@@ -50,6 +50,17 @@ function RouteComponent() {
                 <img src={HeaderLogo} alt="Logo" />
               </Link>
             </div>
+            <div
+              className="navbar--toggler"
+              id="affanNavbarToggler"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#affanOffcanvas"
+              aria-controls="affanOffcanvas"
+            >
+              <span className="d-block"></span>
+              <span className="d-block"></span>
+              <span className="d-block"></span>
+            </div>
           </div>
         </div>
       </div>
