@@ -15,69 +15,49 @@ function LoginComponent() {
   const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
 
+  // **Manual Sign-In with Username and Password**
   const handleUsernameSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     try {
-      const usersRef = collection(firestore, "users");
+      // Reference the Firestore `users` collection
+      const usersRef = collection(firestore, 'users');
       const q = query(
         usersRef,
-        where("username", "==", username),
-        where("password", "==", password)
+        where('username', '==', username),
+        where('password', '==', password) // Match both username and password
       );
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data();
-        console.log("Fetched user document:", userData);
-  
-        // Store user details in localStorage
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            username: userData.username,
-            email: userData.email,
-          })
-        );
-        console.log("User data stored in localStorage:", {
-          username: userData.username,
-          email: userData.email,
-        });
-  
-        Swal("Success", "Login successful!", "success");
-        navigate({ to: "/customerDashboard" });
+        // Successful login
+        Swal('Success', 'Login successful!', 'success');
+        navigate({ to: '/customerDashboard' });
       } else {
-        Swal("Error", "Invalid username or password. Please try again.", "error");
+        // Invalid credentials
+        Swal('Error', 'Invalid username or password. Please try again.', 'error');
       }
     } catch (error) {
-      console.error("Error during Username Sign-In:", error);
-      Swal("Error", "An unexpected error occurred. Please try again.", "error");
+      console.error('Error during Username Sign-In:', error);
+      Swal('Error', 'An unexpected error occurred. Please try again.', 'error');
     }
   };
-  
-  
+
+  // **Google Sign-In**
   const handleGoogleSignIn = async () => {
     try {
+      // Use Firebase Authentication for Google Sign-In
       const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-  
-      // Store user details in localStorage
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: user.displayName || "Anonymous",
-          email: user.email || "No Email Found",
-        })
-      );
-  
-      Swal("Success", `Welcome back, ${user.displayName || "User"}!`, "success");
-      navigate({ to: "/customerDashboard" });
+      const user = result.user; // The signed-in user
+
+      console.log('Google Sign-In successful:', user);
+      Swal('Success', `Welcome back, ${user.displayName || 'User'}!`, 'success');
+      navigate({ to: '/customerDashboard' });
     } catch (error) {
-      console.error("Error during Google Sign-In:", error);
-      Swal("Error", "Google Sign-In failed. Please try again.", "error");
+      console.error('Error during Google Sign-In:', error);
+      Swal('Error', 'Google Sign-In failed. Please try again.', 'error');
     }
   };
-  
 
   return (
     <>
@@ -95,51 +75,35 @@ function LoginComponent() {
         </div>
       </div>
 
-      {/* Login Form */}
+    
+
+      {/* <!-- Login Wrapper Area --> */}
       <div className="login-wrapper d-flex align-items-center justify-content-center">
         <div className="custom-container">
+          {/* <!-- Image -->*/}
           <div className="text-center px-4">
-            <img className="login-intro-img" src={authImage} alt="Login Intro" />
+            <img className="login-intro-img" src={authImage} alt=""/>
           </div>
-          <div className="register-form mt-4">
-            <h6 className="mb-3 text-center">Log in to continue to PackageVault</h6>
-            <form onSubmit={handleUsernameSignIn}>
-              {/* Username Input */}
-              <div className="form-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-              {/* Password Input */}
-              <div className="form-group position-relative">
-                <input
-                  className="form-control"
-                  type="password"
-                  placeholder="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              {/* Normal Sign-In Button */}
-              <button className="btn btn-primary w-100" type="submit">Sign In</button>
 
-              {/* Google Sign-In Button */}
-              <div className="d-flex justify-content-between w-100 mt-3">
-                <button className="btn btn-light w-100" type="button" onClick={handleGoogleSignIn}>
-                  <i className="bi bi-google me-2"></i>Google
-                </button>
+          {/* <!-- Login Form --> */}
+          <div className="register-form mt-4">
+            <h6 className="mb-3 text-center">Login with</h6>
+            <div className="row">
+              <div className="col-12">
+                <a className="btn btn-primary btn-facebook mb-3 w-100" href="#">
+                  <i className="bi bi-facebook me-1"></i> Login with Facebook
+                </a>
+
+                <a className="btn btn-primary btn-google mb-3 w-100" href="#">
+                  <i className="bi bi-google me-1"></i> Login with Google
+                </a>
               </div>
-            </form>
+            </div>
           </div>
-          {/* Redirect to Register */}
+
+          {/* <!-- Login Meta --> */}
           <div className="login-meta-data text-center">
-            <p className="mb-0">Don't have an account? <Link to="/register">Register Now</Link></p>
+            <p className="mb-0">Didn't have an account? <Link className="stretched-link" to="/register">Register Now</Link></p>
           </div>
         </div>
       </div>
