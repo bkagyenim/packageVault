@@ -156,38 +156,7 @@ function RegisterComponent() {
           </div>
 
           {/* Register Form */}
-          <form className="register-form mt-4" onSubmit={handleSignUp}>
-            <h6 className="mb-3 text-center">Register Manually</h6>
-            <input
-              type="text"
-              className="form-control mb-3"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="email"
-              className="form-control mb-3"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="text"
-              className="form-control mb-3"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <input
-              type="password"
-              className="form-control mb-3"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className="btn btn-primary w-100 mb-3">Register</button>
-          </form>
+          
 
           {/* Social Sign-Up Buttons */}
           <h6 className="mb-3 text-center">Or Register With</h6>
@@ -201,7 +170,7 @@ function RegisterComponent() {
           {/* Login Meta */}
           <div className="login-meta-data text-center">
             <p className="mb-0">
-              Have an account? <Link to="/login">Login Now</Link>
+              Already Have an account? <Link to="/login">Login Now</Link>
             </p>
           </div>
         </div>
