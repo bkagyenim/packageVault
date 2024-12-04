@@ -1,61 +1,44 @@
-import * as React from 'react';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import authImage from '../assets/img/bg-img/auth.png';
-import { auth, firestore, googleProvider } from '../firebaseConfig'; // Import auth and googleProvider
-import { signInWithPopup } from 'firebase/auth'; // Import signInWithPopup
-import { collection, query, where, getDocs } from 'firebase/firestore'; // Firestore imports
-import Swal from 'sweetalert'; // Import SweetAlert for notifications
+import * as React from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import authImage from "../assets/img/bg-img/auth.png";
+import { auth, googleProvider, facebookProvider } from "../firebaseConfig"; // Import auth, googleProvider, facebookProvider
+import { signInWithPopup } from "firebase/auth"; // Import signInWithPopup
+import Swal from "sweetalert2"; // Import SweetAlert for notifications
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute("/login")({
   component: LoginComponent,
 });
 
 function LoginComponent() {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
-
-  // **Manual Sign-In with Username and Password**
-  const handleUsernameSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    try {
-      // Reference the Firestore `users` collection
-      const usersRef = collection(firestore, 'users');
-      const q = query(
-        usersRef,
-        where('username', '==', username),
-        where('password', '==', password) // Match both username and password
-      );
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        // Successful login
-        Swal('Success', 'Login successful!', 'success');
-        navigate({ to: '/customerDashboard' });
-      } else {
-        // Invalid credentials
-        Swal('Error', 'Invalid username or password. Please try again.', 'error');
-      }
-    } catch (error) {
-      console.error('Error during Username Sign-In:', error);
-      Swal('Error', 'An unexpected error occurred. Please try again.', 'error');
-    }
-  };
 
   // **Google Sign-In**
   const handleGoogleSignIn = async () => {
     try {
-      // Use Firebase Authentication for Google Sign-In
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user; // The signed-in user
 
-      console.log('Google Sign-In successful:', user);
-      Swal('Success', `Welcome back, ${user.displayName || 'User'}!`, 'success');
-      navigate({ to: '/customerDashboard' });
+      console.log("Google Sign-In successful:", user);
+      Swal.fire("Success", `Welcome back, ${user.displayName || "User"}!`, "success");
+      navigate({ to: "/customerDashboard" });
     } catch (error) {
-      console.error('Error during Google Sign-In:', error);
-      Swal('Error', 'Google Sign-In failed. Please try again.', 'error');
+      console.error("Error during Google Sign-In:", error);
+      Swal.fire("Error", "Google Sign-In failed. Please try again.", "error");
+    }
+  };
+
+  // **Facebook Sign-In**
+  const handleFacebookSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user; // The signed-in user
+
+      console.log("Facebook Sign-In successful:", user);
+      Swal.fire("Success", `Welcome back, ${user.displayName || "User"}!`, "success");
+      navigate({ to: "/customerDashboard" });
+    } catch (error) {
+      console.error("Error during Facebook Sign-In:", error);
+      Swal.fire("Error", "Facebook Sign-In failed. Please try again.", "error");
     }
   };
 
@@ -65,7 +48,11 @@ function LoginComponent() {
       <div className="header-area" id="headerArea">
         <div className="container">
           <div className="header-content position-relative d-flex align-items-center justify-content-center">
-            <Link to="/" className="position-absolute start-0 ms-3" style={{ fontSize: '24px', textDecoration: 'none' }}>
+            <Link
+              to="/"
+              className="position-absolute start-0 ms-3"
+              style={{ fontSize: "24px", textDecoration: "none" }}
+            >
               &#8592;
             </Link>
             <div className="page-heading text-center">
@@ -75,38 +62,48 @@ function LoginComponent() {
         </div>
       </div>
 
-    
-
-      {/* <!-- Login Wrapper Area --> */}
+      {/* Login Wrapper Area */}
       <div className="login-wrapper d-flex align-items-center justify-content-center">
         <div className="custom-container">
-          {/* <!-- Image -->*/}
+          {/* Image */}
           <div className="text-center px-4">
-            <img className="login-intro-img" src={authImage} alt=""/>
+            <img className="login-intro-img" src={authImage} alt="Login Intro" />
           </div>
 
-          {/* <!-- Login Form --> */}
+          {/* Login Form */}
           <div className="register-form mt-4">
             <h6 className="mb-3 text-center">Login with</h6>
             <div className="row">
               <div className="col-12">
-                <a className="btn btn-primary btn-facebook mb-3 w-100" href="#">
+                {/* Facebook Login Button */}
+                <button
+                  className="btn btn-primary btn-facebook mb-3 w-100"
+                  onClick={handleFacebookSignIn}
+                >
                   <i className="bi bi-facebook me-1"></i> Login with Facebook
-                </a>
+                </button>
 
-                <a className="btn btn-primary btn-google mb-3 w-100" href="#">
+                {/* Google Login Button */}
+                <button
+                  className="btn btn-primary btn-google mb-3 w-100"
+                  onClick={handleGoogleSignIn}
+                >
                   <i className="bi bi-google me-1"></i> Login with Google
-                </a>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* <!-- Login Meta --> */}
+          {/* Login Meta */}
           <div className="login-meta-data text-center">
-            <p className="mb-0">Didn't have an account? <Link className="stretched-link" to="/register">Register Now</Link></p>
+            <p className="mb-0">
+              Don't have an account? <Link to="/register">Register Now</Link>
+            </p>
           </div>
         </div>
       </div>
     </>
   );
 }
+
+export default LoginComponent;
