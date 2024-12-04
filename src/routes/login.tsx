@@ -15,49 +15,63 @@ function LoginComponent() {
   const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
 
-  // **Manual Sign-In with Username and Password**
   const handleUsernameSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
     try {
-      // Reference the Firestore `users` collection
-      const usersRef = collection(firestore, 'users');
+      const usersRef = collection(firestore, "users");
       const q = query(
         usersRef,
-        where('username', '==', username),
-        where('password', '==', password) // Match both username and password
+        where("username", "==", username),
+        where("password", "==", password)
       );
       const querySnapshot = await getDocs(q);
-
+  
       if (!querySnapshot.empty) {
-        // Successful login
-        Swal('Success', 'Login successful!', 'success');
-        navigate({ to: '/customerDashboard' });
+        const userData = querySnapshot.docs[0].data();
+  
+        // Store user details in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            username: userData.username,
+            email: userData.email,
+          })
+        );
+  
+        Swal("Success", "Login successful!", "success");
+        navigate({ to: "/customerDashboard" });
       } else {
-        // Invalid credentials
-        Swal('Error', 'Invalid username or password. Please try again.', 'error');
+        Swal("Error", "Invalid username or password. Please try again.", "error");
       }
     } catch (error) {
-      console.error('Error during Username Sign-In:', error);
-      Swal('Error', 'An unexpected error occurred. Please try again.', 'error');
+      console.error("Error during Username Sign-In:", error);
+      Swal("Error", "An unexpected error occurred. Please try again.", "error");
     }
   };
-
-  // **Google Sign-In**
+  
   const handleGoogleSignIn = async () => {
     try {
-      // Use Firebase Authentication for Google Sign-In
       const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user; // The signed-in user
-
-      console.log('Google Sign-In successful:', user);
-      Swal('Success', `Welcome back, ${user.displayName || 'User'}!`, 'success');
-      navigate({ to: '/customerDashboard' });
+      const user = result.user;
+  
+      // Store user details in localStorage
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: user.displayName || "Anonymous",
+          email: user.email || "No Email Found",
+        })
+      );
+  
+      Swal("Success", `Welcome back, ${user.displayName || "User"}!`, "success");
+      navigate({ to: "/customerDashboard" });
     } catch (error) {
-      console.error('Error during Google Sign-In:', error);
-      Swal('Error', 'Google Sign-In failed. Please try again.', 'error');
+      console.error("Error during Google Sign-In:", error);
+      Swal("Error", "Google Sign-In failed. Please try again.", "error");
     }
   };
+  
 
   return (
     <>
