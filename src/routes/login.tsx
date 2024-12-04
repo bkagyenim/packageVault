@@ -9,6 +9,8 @@ export const Route = createFileRoute("/login")({
   component: LoginComponent,
 });
 
+
+
 function LoginComponent() {
   const navigate = useNavigate();
 

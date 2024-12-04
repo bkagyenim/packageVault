@@ -40,7 +40,7 @@ function HomeComponent() {
                   </div>
                   <div className="card-blog-content">
                     <p className="blog-title d-block mb-3 text-dark">Easily Track and Pick Up Packages</p>
-                    <Link className="btn btn-primary btn-sm" to="/register">Login as Customer</Link>
+                    <Link className="btn btn-primary btn-sm" to="/login">Login as Customer</Link>
                   </div>
                 </div>
               </div>
