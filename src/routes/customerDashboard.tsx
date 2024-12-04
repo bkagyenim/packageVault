@@ -15,14 +15,11 @@ import firebaseConfig from "../firebaseConfig";
 // Initialize Firebase
 import { initializeApp } from "firebase/app";
 
-
-
 initializeApp(firebaseConfig);
 
 type User = {
   username: string;
   email: string;
-  userId: string;
 } | null;
 
 export const Route = createFileRoute("/customerDashboard")({
@@ -40,13 +37,12 @@ function RouteComponent() {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         const provider = currentUser.providerData[0]?.providerId;
-  
+
         if (provider === "google.com") {
           // Google Sign-In
           setUser({
             username: currentUser.displayName || "Anonymous",
             email: currentUser.email || "No Email Found",
-            userId: currentUser.uid,
           });
           setLoading(false);
         } else {
@@ -56,7 +52,7 @@ function RouteComponent() {
             const username = currentUser.displayName || ""; // Assuming manual login sets displayName to the username
             const userQuery = query(usersRef, where("username", "==", username));
             const userSnapshot = await getDocs(userQuery);
-  
+
             if (userSnapshot.empty) {
               console.error("No matching user found in the users table.");
               setUser(null);
@@ -65,7 +61,6 @@ function RouteComponent() {
               setUser({
                 username: userData.username || "Anonymous",
                 email: userData.email || "No Email Found",
-                userId: userSnapshot.docs[0].id,
               });
             }
           } catch (error) {
@@ -81,11 +76,10 @@ function RouteComponent() {
       }
     });
   }, []);
-  
 
   useEffect(() => {
     const fetchPackageCounts = async () => {
-      if (!user?.userId) return;
+      if (!user?.username) return;
 
       try {
         const deliveryRef = collection(db, "delivery");
@@ -94,7 +88,7 @@ function RouteComponent() {
         const pendingQuery = query(
           deliveryRef,
           where("status", "==", "pending"),
-          where("user", "==", user.userId)
+          where("user", "==", user.username)
         );
         const pendingSnapshot = await getDocs(pendingQuery);
 
@@ -102,7 +96,7 @@ function RouteComponent() {
         const completedQuery = query(
           deliveryRef,
           where("status", "==", "completed"),
-          where("user", "==", user.userId)
+          where("user", "==", user.username)
         );
         const completedSnapshot = await getDocs(completedQuery);
 
@@ -204,7 +198,11 @@ function RouteComponent() {
           <div className="card">
             <div className="card-body">
               <div className="standard-tab">
-                <ul className="nav rounded-lg mb-2 p-2 shadow-sm" id="affanTabs1" role="tablist">
+                <ul
+                  className="nav rounded-lg mb-2 p-2 shadow-sm"
+                  id="affanTabs1"
+                  role="tablist"
+                >
                   <li className="nav-item" role="presentation">
                     <button
                       className="btn active"
@@ -235,7 +233,10 @@ function RouteComponent() {
                   </li>
                 </ul>
 
-                <div className="tab-content rounded-lg p-3 shadow-sm" id="affanTabs1Content">
+                <div
+                  className="tab-content rounded-lg p-3 shadow-sm"
+                  id="affanTabs1Content"
+                >
                   <div
                     className="tab-pane fade show active"
                     id="bootstrap"
@@ -245,7 +246,12 @@ function RouteComponent() {
                     <h6>You have {pendingCount} Pending Packages</h6>
                   </div>
 
-                  <div className="tab-pane fade" id="pwa" role="tabpanel" aria-labelledby="pwa-tab">
+                  <div
+                    className="tab-pane fade"
+                    id="pwa"
+                    role="tabpanel"
+                    aria-labelledby="pwa-tab"
+                  >
                     <h6>You have {completedCount} Completed Packages</h6>
                   </div>
                 </div>
@@ -309,7 +315,7 @@ function RouteComponent() {
       </div>
 
       {/*Footer*/}
-      <Footer/>
+      <Footer />
     </>
   );
 }
