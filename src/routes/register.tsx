@@ -1,103 +1,143 @@
-import * as React from 'react';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import authImage from '../assets/img/bg-img/auth.png';
-import { auth, googleProvider } from '../firebaseConfig';
-import { signInWithPopup } from 'firebase/auth';
-import { db } from '../firebaseConfig';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import Swal from 'sweetalert';
+import * as React from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import authImage from "../assets/img/bg-img/auth.png";
+import { auth, googleProvider, facebookProvider, db } from "../firebaseConfig";
+import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import Swal from "sweetalert2";
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute("/register")({
   component: RegisterComponent,
 });
 
 function RegisterComponent() {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [phone, setPhone] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  // Normal Sign-Up Logic
+  // **Manual Sign-Up**
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!email || !username || !phone || !password) {
-      Swal('Error', 'All fields are required', 'error');
+      Swal.fire("Error", "All fields are required", "error");
       return;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-      Swal('Error', 'Please enter a valid email address', 'error');
+      Swal.fire("Error", "Please enter a valid email address", "error");
       return;
     }
 
     try {
-      const usersRef = collection(db, 'users');
+      const usersRef = collection(db, "users");
 
       // Check if email, username, or phone number already exists
-      const emailQuery = query(usersRef, where('email', '==', email));
-      const usernameQuery = query(usersRef, where('username', '==', username));
-      const phoneQuery = query(usersRef, where('phone', '==', phone));
+      const emailQuery = query(usersRef, where("email", "==", email));
+      const usernameQuery = query(usersRef, where("username", "==", username));
+      const phoneQuery = query(usersRef, where("phone", "==", phone));
 
       const emailSnapshot = await getDocs(emailQuery);
       const usernameSnapshot = await getDocs(usernameQuery);
       const phoneSnapshot = await getDocs(phoneQuery);
 
       if (!emailSnapshot.empty) {
-        Swal('Error', 'Email already exists. Please use a different email.', 'error');
+        Swal.fire("Error", "Email already exists. Please use a different email.", "error");
         return;
       }
       if (!usernameSnapshot.empty) {
-        Swal('Error', 'Username already exists. Please choose a different username.', 'error');
+        Swal.fire("Error", "Username already exists. Please choose a different username.", "error");
         return;
       }
       if (!phoneSnapshot.empty) {
-        Swal('Error', 'Phone number already exists. Please use a different phone number.', 'error');
+        Swal.fire("Error", "Phone number already exists. Please use a different phone number.", "error");
         return;
       }
 
-      // Add new user document to Firestore
+      // Add new user to Firebase Authentication and Firestore
+      await createUserWithEmailAndPassword(auth, email, password);
+
       await addDoc(usersRef, {
         email,
         username,
         phone,
-        password,
       });
 
-      Swal('Success', 'User registered successfully!', 'success').then(() => {
-        navigate({ to: '/login' });
+      Swal.fire("Success", "User registered successfully!", "success").then(() => {
+        navigate({ to: "/login" });
       });
     } catch (error) {
-      Swal('Error', 'An error occurred during registration', 'error');
-      console.error('Error adding document:', error);
+      Swal.fire("Error", "An error occurred during registration", "error");
+      console.error("Error adding user:", error);
     }
   };
 
-  // Google Sign-In Logic
-  const handleGoogleSignIn = async () => {
+  // **Google Sign-Up**
+  const handleGoogleSignUp = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
 
-      // Firebase handles user authentication. No manual Firestore entry required.
-      console.log('Google Sign-In successful:', result.user);
+      const usersRef = collection(db, "users");
+      const userQuery = query(usersRef, where("email", "==", user.email));
+      const userSnapshot = await getDocs(userQuery);
 
-      Swal('Success', 'Signed in with Google successfully! Redirecting to login.', 'success').then(() => {
-        navigate({ to: '/login' });
+      // Check if user already exists
+      if (userSnapshot.empty) {
+        await addDoc(usersRef, {
+          email: user.email,
+          username: user.displayName,
+          phone: "", // Optional, since Google doesn't provide phone number by default
+        });
+      }
+
+      Swal.fire("Success", "Google Sign-Up successful!", "success").then(() => {
+        navigate({ to: "/login" });
       });
     } catch (error) {
-      Swal('Error', 'Error during Google Sign-In', 'error');
-      console.error('Error during Google Sign-In:', error);
+      Swal.fire("Error", "Error during Google Sign-Up", "error");
+      console.error("Error during Google Sign-Up:", error);
+    }
+  };
+
+  // **Facebook Sign-Up**
+  const handleFacebookSignUp = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+
+      const usersRef = collection(db, "users");
+      const userQuery = query(usersRef, where("email", "==", user.email));
+      const userSnapshot = await getDocs(userQuery);
+
+      // Check if user already exists
+      if (userSnapshot.empty) {
+        await addDoc(usersRef, {
+          email: user.email,
+          username: user.displayName,
+          phone: "", // Optional, since Facebook doesn't provide phone number by default
+        });
+      }
+
+      Swal.fire("Success", "Facebook Sign-Up successful!", "success").then(() => {
+        navigate({ to: "/login" });
+      });
+    } catch (error) {
+      Swal.fire("Error", "Error during Facebook Sign-Up", "error");
+      console.error("Error during Facebook Sign-Up:", error);
     }
   };
 
   return (
     <>
+      {/* Header */}
       <div className="header-area" id="headerArea">
         <div className="container">
           <div className="header-content position-relative d-flex align-items-center justify-content-center">
-            <Link to="/" className="position-absolute start-0 ms-3" style={{ fontSize: '24px', textDecoration: 'none' }}>
+            <Link to="/" className="position-absolute start-0 ms-3" style={{ fontSize: "24px", textDecoration: "none" }}>
               &#8592;
             </Link>
             <div className="page-heading text-center">
@@ -107,39 +147,67 @@ function RegisterComponent() {
         </div>
       </div>
 
+      {/* Register Wrapper Area */}
       <div className="login-wrapper d-flex align-items-center justify-content-center">
         <div className="custom-container">
+          {/* Image */}
           <div className="text-center px-4">
-            <img className="login-intro-img" src={authImage} alt="" />
+            <img className="login-intro-img" src={authImage} alt="Register Intro" />
           </div>
-          <div className="register-form mt-4">
-            <h6 className="mb-3 text-center">Register to continue to PackageVault</h6>
-            <form onSubmit={handleSignUp}>
-              <div className="form-group text-start mb-3">
-                <input className="form-control" type="text" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </div>
-              <div className="form-group text-start mb-3">
-                <input className="form-control" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              </div>
-              <div className="form-group text-start mb-3">
-                <input className="form-control" type="number" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-              </div>
-              <div className="form-group text-start mb-3 position-relative">
-                <input className="form-control" type="password" placeholder="New password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              </div>
-              <div className="d-flex justify-content-between w-100">
-                <button className="btn btn-primary w-50 me-2" type="submit">Sign Up</button>
-                <button className="btn btn-light w-50" type="button" onClick={handleGoogleSignIn}>
-                  <i className="bi bi-google me-2"></i>Google
-                </button>
-              </div>
-            </form>
-          </div>
+
+          {/* Register Form */}
+          <form className="register-form mt-4" onSubmit={handleSignUp}>
+            <h6 className="mb-3 text-center">Register Manually</h6>
+            <input
+              type="text"
+              className="form-control mb-3"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="email"
+              className="form-control mb-3"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="text"
+              className="form-control mb-3"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <input
+              type="password"
+              className="form-control mb-3"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className="btn btn-primary w-100 mb-3">Register</button>
+          </form>
+
+          {/* Social Sign-Up Buttons */}
+          <h6 className="mb-3 text-center">Or Register With</h6>
+          <button className="btn btn-primary btn-google mb-3 w-100" onClick={handleGoogleSignUp}>
+            <i className="bi bi-google me-1"></i> Sign Up with Google
+          </button>
+          <button className="btn btn-primary btn-facebook mb-3 w-100" onClick={handleFacebookSignUp}>
+            <i className="bi bi-facebook me-1"></i> Sign Up with Facebook
+          </button>
+
+          {/* Login Meta */}
           <div className="login-meta-data text-center">
-            <p className="mt-3 mb-0">Already have an account? <Link to="/login">Login</Link></p>
+            <p className="mb-0">
+              Have an account? <Link to="/login">Login Now</Link>
+            </p>
           </div>
         </div>
       </div>
     </>
   );
 }
+
+export default RegisterComponent;
