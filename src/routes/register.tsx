@@ -159,7 +159,6 @@ function RegisterComponent() {
           
 
           {/* Social Sign-Up Buttons */}
-          <h6 className="mb-3 text-center">Or Register With</h6>
           <button className="btn btn-primary btn-google mb-3 w-100" onClick={handleGoogleSignUp}>
             <i className="bi bi-google me-1"></i> Sign Up with Google
           </button>
