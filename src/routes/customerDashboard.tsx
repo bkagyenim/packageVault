@@ -5,6 +5,9 @@ import ProfileImage from "../assets/img/bg-img/2.png";
 import Footer from "./footer";
 import { auth } from "../firebaseConfig"; // Import Firebase auth
 import { onAuthStateChanged } from "firebase/auth";
+import Amazon from "../assets/img/partner-img/1.png";
+import Puralator from "../assets/img/partner-img/2.png";
+import FedEx from "../assets/img/partner-img/3.png";
 
 export const Route = createFileRoute("/customerDashboard")({
   component: RouteComponent,
@@ -104,8 +107,107 @@ function RouteComponent() {
       {/* User Info */}
       <div className="page-content-wrapper">
         <div className="container">
-
+        <div className="element-heading">
+            <h6>Statistics</h6>
         </div>
+        </div>
+
+        <div className="container">
+          <div className="card">
+            <div className="card-body">
+              <div className="standard-tab">
+                <ul className="nav rounded-lg mb-2 p-2 shadow-sm" id="affanTabs1" role="tablist">
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="btn active"
+                      id="bootstrap-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#bootstrap"
+                      type="button"
+                      role="tab"
+                      aria-controls="bootstrap"
+                      aria-selected="true"
+                    >
+                      Pending
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="btn"
+                      id="pwa-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#pwa"
+                      type="button"
+                      role="tab"
+                      aria-controls="pwa"
+                      aria-selected="false"
+                    >
+                      Collected
+                    </button>
+                  </li>
+                </ul>
+
+                <div className="tab-content rounded-lg p-3 shadow-sm" id="affanTabs1Content">
+                  <div
+                    className="tab-pane fade show active"
+                    id="bootstrap"
+                    role="tabpanel"
+                    aria-labelledby="bootstrap-tab"
+                  >
+                    <h6>You have 0  Pending Packages</h6>
+                  </div>
+
+                  <div className="tab-pane fade" id="pwa" role="tabpanel" aria-labelledby="pwa-tab">
+                    <h6>You have 0  Completed Packages</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="element-heading mt-3">
+            <h6>Couriers</h6>
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="card">
+            <div className="card-body">
+              <div className="row g-3">
+                <div className="col-4">
+                  <div className="card partner-slide-card border bg-gray">
+                    <div className="card-body p-3">
+                      <a href="#">
+                        <img src={Amazon} alt="Amazon" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="card partner-slide-card border bg-gray">
+                    <div className="card-body p-3">
+                      <a href="#">
+                        <img src={Puralator} alt="Puralator" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="card partner-slide-card border bg-gray">
+                    <div className="card-body p-3">
+                      <a href="#">
+                        <img src={FedEx} alt="FedEx" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Footer */}
         <div className="container mt-5">
           <Footer />
