@@ -53,14 +53,47 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+      {/* SideBar Info */}
+      <div
+        className="offcanvas offcanvas-start"
+        id="affanOffcanvas"
+        data-bs-scroll="true"
+        tabIndex={-1}
+        aria-labelledby="affanOffcanvsLabel"
+      >
+        <button
+          className="btn-close btn-close-white text-reset"
+          type="button"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+        <div className="offcanvas-body p-0">
+          <div className="sidenav-wrapper">
+            <div className="sidenav-profile bg-gradient">
+              <div className="sidenav-style1"></div>
+              <div className="user-profile">
+                <img src={ProfileImage} alt="User Thumbnail" />
+              </div>
+              <div className="user-info text-center mt-4">
+                <h6 className="user-name mb-0">{user.username}</h6>
+                <span>{user.email}</span>
+              </div>
+            </div>
+            <ul className="sidenav-nav ps-0">
+              <li>
+                <Link to="/login">
+                  <i className="bi bi-box-arrow-right"></i> Logout
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
       {/* User Info */}
       <div className="page-content-wrapper">
         <div className="container">
-          <div className="user-info text-center mt-4">
-            <h6 className="user-name mb-0">{user.username}</h6>
-            <span>{user.email}</span>
-          </div>
+
         </div>
         {/* Footer */}
         <div className="container mt-5">
