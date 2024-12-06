@@ -65,6 +65,7 @@ function RouteComponent() {
           return;
         }
 
+        // Ensure all users are fetched and mapped correctly
         const userList = userDocs.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -285,36 +286,34 @@ function RouteComponent() {
                     onChange={(e) => setSelectedCompartment(e.target.value)}
                   >
                     {availableCompartments.length > 0 ? (
-                                            availableCompartments.map((compartment) => (
-                                              <option
-                                                key={compartment.id}
-                                                value={compartment.compartment}
-                                              >
-                                                {compartment.compartment}
-                                              </option>
-                                            ))
-                                          ) : (
-                                            <option disabled>No compartments available</option>
-                                          )}
-                                        </select>
-                                      </div>
-                      
-                                      <button
-                                        className="btn btn-primary w-100"
-                                        type="button"
-                                        onClick={handleSubmit}
-                                      >
-                                        Submit Delivery
-                                      </button>
-                                    </form>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        );
-                      }
-                      
-                      export default RouteComponent;
-                      
-                        
+                      availableCompartments.map((compartment) => (
+                        <option
+                          key={compartment.id}
+                          value={compartment.compartment}
+                        >
+                          {compartment.compartment}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>No compartments available</option>
+                    )}
+                  </select>
+                </div>
+
+                <button
+                  className="btn btn-primary w-100"
+                  type="button"
+                  onClick={handleSubmit}
+                >
+                  Submit Delivery
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default RouteComponent;
