@@ -26,7 +26,7 @@ type UserOption = {
 
 type CompartmentOption = {
   id: string;
-  compartment: string | number; // Updated to handle both string and number
+  compartment: string | number; // Handles both string and number
 };
 
 function RouteComponent() {
@@ -54,23 +54,28 @@ function RouteComponent() {
     const fetchUsers = async () => {
       try {
         const signInMethodCollection = collection(db, "users");
-        const userDocs = await getDocs(query(signInMethodCollection));
+        const userDocs = await getDocs(signInMethodCollection);
 
-        const userList = userDocs.docs.map((doc) => ({
-          value: doc.id,
-          label: doc.data().email, // Fetch email field for display
-        }));
-
-        if (userList.length === 0) {
+        if (userDocs.empty) {
           Swal.fire({
             icon: "warning",
             title: "No Users Found",
-            text: "No users available in the signInMethod collection.",
+            text: "No users available in the 'users' collection.",
           });
+          return;
         }
+
+        const userList = userDocs.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            value: doc.id,
+            label: data.email || "Unknown Email", // Default if email is missing
+          };
+        });
 
         setUsers(userList);
       } catch (error) {
+        console.error("Error fetching users:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -103,6 +108,7 @@ function RouteComponent() {
 
         setAvailableCompartments(compartments);
       } catch (error) {
+        console.error("Error fetching compartments:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -150,9 +156,12 @@ function RouteComponent() {
       // Query the vault collection for the selected compartment
       const vaultQuery = query(
         vaultCollection,
-        where("compartment", "==", isNaN(Number(selectedCompartment))
-          ? selectedCompartment // Treat as string if not a valid number
-          : Number(selectedCompartment) // Treat as number if valid
+        where(
+          "compartment",
+          "==",
+          isNaN(Number(selectedCompartment))
+            ? selectedCompartment // Treat as string if not a valid number
+            : Number(selectedCompartment) // Treat as number if valid
         )
       );
       const vaultSnapshot = await getDocs(vaultQuery);
@@ -199,6 +208,7 @@ function RouteComponent() {
         window.location.reload();
       });
     } catch (error) {
+      console.error("Error saving delivery or updating compartment:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -275,34 +285,36 @@ function RouteComponent() {
                     onChange={(e) => setSelectedCompartment(e.target.value)}
                   >
                     {availableCompartments.length > 0 ? (
-                      availableCompartments.map((compartment) => (
-                        <option
-                          key={compartment.id}
-                          value={compartment.compartment}
-                        >
-                          {compartment.compartment}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>No compartments available</option>
-                    )}
-                  </select>
-                </div>
-
-                <button
-                  className="btn btn-primary w-100"
-                  type="button"
-                  onClick={handleSubmit}
-                >
-                  Submit Delivery
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-export default RouteComponent;
+                                            availableCompartments.map((compartment) => (
+                                              <option
+                                                key={compartment.id}
+                                                value={compartment.compartment}
+                                              >
+                                                {compartment.compartment}
+                                              </option>
+                                            ))
+                                          ) : (
+                                            <option disabled>No compartments available</option>
+                                          )}
+                                        </select>
+                                      </div>
+                      
+                                      <button
+                                        className="btn btn-primary w-100"
+                                        type="button"
+                                        onClick={handleSubmit}
+                                      >
+                                        Submit Delivery
+                                      </button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        );
+                      }
+                      
+                      export default RouteComponent;
+                      
+                        

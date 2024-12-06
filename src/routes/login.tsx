@@ -77,13 +77,13 @@ function LoginComponent() {
             <h6 className="mb-3 text-center">Login with</h6>
             <div className="row">
               <div className="col-12">
-                {/* Facebook Login Button 
+                {/* Facebook Login Button */}
                 <button
                   className="btn btn-primary btn-facebook mb-3 w-100"
                   onClick={handleFacebookSignIn}
                 >
                   <i className="bi bi-facebook me-1"></i> Login with Facebook
-                </button>*/}
+                </button>
 
                 {/* Google Login Button */}
                 <button
