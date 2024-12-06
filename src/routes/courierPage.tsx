@@ -53,7 +53,7 @@ function RouteComponent() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const signInMethodCollection = collection(db, "signInMethod");
+        const signInMethodCollection = collection(db, "users");
         const userDocs = await getDocs(signInMethodCollection);
 
         const userList = userDocs.docs.map((doc) => ({
