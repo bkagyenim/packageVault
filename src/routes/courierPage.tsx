@@ -26,7 +26,7 @@ type UserOption = {
 
 type CompartmentOption = {
   id: string;
-  compartment: string | number; // Updated to handle both string and number
+  compartment: string | number;
 };
 
 function RouteComponent() {
@@ -49,16 +49,26 @@ function RouteComponent() {
 
   const db = getFirestore();
 
-  // Fetch users from Firestore
+  // Fetch users from the signInMethod collection in Firestore
   useEffect(() => {
     const fetchUsers = async () => {
-      const usersCollection = collection(db, "users");
-      const userDocs = await getDocs(usersCollection);
-      const userList = userDocs.docs.map((doc) => ({
-        value: doc.id,
-        label: doc.data().username,
-      }));
-      setUsers(userList);
+      try {
+        const signInMethodCollection = collection(db, "signInMethod");
+        const userDocs = await getDocs(signInMethodCollection);
+
+        const userList = userDocs.docs.map((doc) => ({
+          value: doc.id,
+          label: doc.data().email, // Display email in the dropdown
+        }));
+
+        setUsers(userList);
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch users. Please try again later.",
+        });
+      }
     };
 
     fetchUsers();
@@ -132,9 +142,12 @@ function RouteComponent() {
       // Query the vault collection for the selected compartment
       const vaultQuery = query(
         vaultCollection,
-        where("compartment", "==", isNaN(Number(selectedCompartment))
-          ? selectedCompartment // Treat as string if not a valid number
-          : Number(selectedCompartment) // Treat as number if valid
+        where(
+          "compartment",
+          "==",
+          isNaN(Number(selectedCompartment))
+            ? selectedCompartment // Treat as string if not a valid number
+            : Number(selectedCompartment) // Treat as number if valid
         )
       );
       const vaultSnapshot = await getDocs(vaultQuery);
@@ -205,13 +218,11 @@ function RouteComponent() {
       <div className="header-area" id="headerArea">
         <div className="container">
           <div className="header-content position-relative d-flex align-items-center justify-content-between">
-            {/* Back Button */}
             <div className="back-button">
               <Link to="/">
                 <i className="bi bi-arrow-left-short"></i>
               </Link>
             </div>
-            {/* Page Title */}
             <div className="header-area" id="headerArea">
               <div className="container">
                 <div className="header-content position-relative d-flex align-items-center justify-content-center">
