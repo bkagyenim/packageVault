@@ -162,9 +162,9 @@ function RegisterComponent() {
           <button className="btn btn-primary btn-google mb-3 w-100" onClick={handleGoogleSignUp}>
             <i className="bi bi-google me-1"></i> Sign Up with Google
           </button>
-          <button className="btn btn-primary btn-facebook mb-3 w-100" onClick={handleFacebookSignUp}>
+          {/*<button className="btn btn-primary btn-facebook mb-3 w-100" onClick={handleFacebookSignUp}>
             <i className="bi bi-facebook me-1"></i> Sign Up with Facebook
-          </button>
+          </button>*/}
 
           {/* Login Meta */}
           <div className="login-meta-data text-center">
