@@ -67,10 +67,10 @@ function LoginComponent() {
       {/* Login Wrapper Area */}
       <div className="login-wrapper d-flex align-items-center justify-content-center">
         <div className="custom-container">
-          {/* Image */}
+          {/* Image 
           <div className="text-center px-4">
             <img className="login-intro-img" src={authImage} alt="Login Intro" />
-          </div>
+          </div>*/}
 
           {/* Login Form */}
           <div className="register-form mt-4">
