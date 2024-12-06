@@ -252,7 +252,7 @@ function RouteComponent() {
                     value={selectedUser}
                     onChange={(option) => setSelectedUser(option)}
                     placeholder="Search and select a user"
-                    isSearchable
+                    isSearchable // Enable searchable dropdown
                   />
                 </div>
 
