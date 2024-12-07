@@ -153,7 +153,7 @@ function RegisterComponent() {
           {/* Image */}
           <div className="text-center px-4">
             <img className="login-intro-img" src={authImage} alt="Register Intro" />
-          </div>
+          </div><br/>
 
           {/* Register Form */}
           
