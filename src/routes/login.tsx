@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import authImage from "../assets/img/bg-img/auth1.png";
+import authImage from "../assets/img/bg-img/login3.png";
 import { auth, googleProvider, facebookProvider } from "../firebaseConfig"; // Import auth, googleProvider, facebookProvider
 import { signInWithPopup } from "firebase/auth"; // Import signInWithPopup
 import Swal from "sweetalert2"; // Import SweetAlert for notifications
