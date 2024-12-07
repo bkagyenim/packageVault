@@ -3,8 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import HeaderLogo from "../assets/img/core-img/logo.png";
 import ProfileImage from "../assets/img/bg-img/2.png";
 import Footer from "./footer";
-import { auth } from "../firebaseConfig"; // Import Firebase auth
+import { auth, db } from "../firebaseConfig"; // Import Firebase auth and Firestore
 import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import Amazon from "../assets/img/partner-img/1.png";
 import Puralator from "../assets/img/partner-img/2.png";
 import FedEx from "../assets/img/partner-img/3.png";
@@ -14,19 +15,49 @@ export const Route = createFileRoute("/customerDashboard")({
 });
 
 function RouteComponent() {
-  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ username: string; email: string; uid: string } | null>(null);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
 
   useEffect(() => {
     // Listen for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Update user state with displayName and email from Firebase
-        setUser({
+        const userData = {
           username: currentUser.displayName || "Anonymous User",
           email: currentUser.email || "",
-        });
+          uid: currentUser.uid,
+        };
+        setUser(userData);
+
+        // Fetch data from Firestore
+        try {
+          const deliveryRef = collection(db, "delivery");
+          const pendingQuery = query(
+            deliveryRef,
+            where("userId", "==", userData.uid),
+            where("status", "==", "Pending")
+          );
+          const completedQuery = query(
+            deliveryRef,
+            where("userId", "==", userData.uid),
+            where("status", "==", "Completed")
+          );
+
+          const [pendingSnapshot, completedSnapshot] = await Promise.all([
+            getDocs(pendingQuery),
+            getDocs(completedQuery),
+          ]);
+
+          setPendingCount(pendingSnapshot.size);
+          setCompletedCount(completedSnapshot.size);
+        } catch (error) {
+          console.error("Error fetching data from Firestore:", error);
+        }
       } else {
         setUser(null); // No user is signed in
+        setPendingCount(0);
+        setCompletedCount(0);
       }
     });
 
@@ -107,9 +138,9 @@ function RouteComponent() {
       {/* User Info */}
       <div className="page-content-wrapper">
         <div className="container">
-        <div className="element-heading">
+          <div className="element-heading">
             <h6>Statistics</h6>
-        </div>
+          </div>
         </div>
 
         <div className="container">
@@ -154,11 +185,11 @@ function RouteComponent() {
                     role="tabpanel"
                     aria-labelledby="bootstrap-tab"
                   >
-                    <h6>You have 0  Pending Packages</h6>
+                    <h6>You have {pendingCount} Pending Packages</h6>
                   </div>
 
                   <div className="tab-pane fade" id="pwa" role="tabpanel" aria-labelledby="pwa-tab">
-                    <h6>You have 0  Completed Packages</h6>
+                    <h6>You have {completedCount} Completed Packages</h6>
                   </div>
                 </div>
               </div>
