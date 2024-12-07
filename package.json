@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@tanstack/react-router": "^1.79.0",
-    "chart.js": "^4.4.6",
+    "chart.js": "^4.4.7",
     "desandro-matches-selector": "^2.0.2",
     "ev-emitter": "^2.1.2",
     "firebase": "^11.0.1",

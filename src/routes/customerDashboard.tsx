@@ -5,10 +5,19 @@ import ProfileImage from "../assets/img/bg-img/2.png";
 import Footer from "./footer";
 import { auth, db } from "../firebaseConfig"; // Import Firebase auth and Firestore
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import Amazon from "../assets/img/partner-img/1.png";
 import Puralator from "../assets/img/partner-img/2.png";
 import FedEx from "../assets/img/partner-img/3.png";
+import { Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const Route = createFileRoute("/customerDashboard")({
   component: RouteComponent,
@@ -36,12 +45,12 @@ function RouteComponent() {
           const pendingQuery = query(
             deliveryRef,
             where("user", "==", userId),
-            where("status", "==", "pending")
+            where("status", "==", "Pending")
           );
           const completedQuery = query(
             deliveryRef,
             where("user", "==", userId),
-            where("status", "==", "completed")
+            where("status", "==", "Completed")
           );
 
           const [pendingSnapshot, completedSnapshot] = await Promise.all([
@@ -91,6 +100,18 @@ function RouteComponent() {
       </div>
     );
   }
+
+  // Prepare data for the pie chart
+  const chartData = {
+    labels: ["Pending", "Completed"],
+    datasets: [
+      {
+        data: [pendingCount, completedCount],
+        backgroundColor: ["#FF6384", "#36A2EB"], // Colors for Pending and Completed
+        hoverBackgroundColor: ["#FF6384", "#36A2EB"],
+      },
+    ],
+  };
 
   return (
     <>
@@ -212,6 +233,16 @@ function RouteComponent() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Pie Chart */}
+        <div className="container mt-4">
+          <div className="card">
+            <div className="card-body">
+              <h6>Package Distribution</h6>
+              <Pie data={chartData} />
             </div>
           </div>
         </div>
