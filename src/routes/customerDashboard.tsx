@@ -5,7 +5,7 @@ import ProfileImage from "../assets/img/bg-img/2.png";
 import Footer from "./footer";
 import { auth, db } from "../firebaseConfig"; // Import Firebase auth and Firestore
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import Amazon from "../assets/img/partner-img/1.png";
 import Puralator from "../assets/img/partner-img/2.png";
 import FedEx from "../assets/img/partner-img/3.png";
@@ -20,27 +20,27 @@ function RouteComponent() {
   const [completedCount, setCompletedCount] = useState(0);
 
   useEffect(() => {
-    // Listen for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        const userData = {
-          username: currentUser.displayName || "Anonymous User",
-          email: currentUser.email || "",
-          uid: currentUser.uid,
-        };
-        setUser(userData);
+    const fetchData = async (email: string) => {
+      try {
+        // Step 1: Fetch user's document ID from `users` collection
+        const usersRef = collection(db, "users");
+        const userQuery = query(usersRef, where("email", "==", email));
+        const userSnapshot = await getDocs(userQuery);
 
-        // Fetch data from Firestore
-        try {
+        if (!userSnapshot.empty) {
+          const userDoc = userSnapshot.docs[0]; // Assume email is unique
+          const userId = userDoc.id;
+
+          // Step 2: Use the userId to fetch data from the `delivery` collection
           const deliveryRef = collection(db, "delivery");
           const pendingQuery = query(
             deliveryRef,
-            where("userId", "==", userData.uid),
+            where("user", "==", userId),
             where("status", "==", "pending")
           );
           const completedQuery = query(
             deliveryRef,
-            where("userId", "==", userData.uid),
+            where("user", "==", userId),
             where("status", "==", "completed")
           );
 
@@ -49,10 +49,29 @@ function RouteComponent() {
             getDocs(completedQuery),
           ]);
 
+          // Update state with counts
           setPendingCount(pendingSnapshot.size);
           setCompletedCount(completedSnapshot.size);
-        } catch (error) {
-          console.error("Error fetching data from Firestore:", error);
+        } else {
+          console.error("User document not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching data from Firestore:", error);
+      }
+    };
+
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        const userData = {
+          username: currentUser.displayName || "Anonymous User",
+          email: currentUser.email || "",
+          uid: currentUser.uid,
+        };
+        setUser(userData);
+
+        if (userData.email) {
+          fetchData(userData.email); // Fetch delivery data
         }
       } else {
         setUser(null); // No user is signed in
