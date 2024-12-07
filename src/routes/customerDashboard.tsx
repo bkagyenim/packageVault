@@ -45,12 +45,12 @@ function RouteComponent() {
           const pendingQuery = query(
             deliveryRef,
             where("user", "==", userId),
-            where("status", "==", "Pending")
+            where("status", "==", "pending")
           );
           const completedQuery = query(
             deliveryRef,
             where("user", "==", userId),
-            where("status", "==", "Completed")
+            where("status", "==", "completed")
           );
 
           const [pendingSnapshot, completedSnapshot] = await Promise.all([
@@ -240,8 +240,8 @@ function RouteComponent() {
         {/* Pie Chart */}
         <div className="container mt-4">
           <div className="card">
-            <div className="card-body">
-              <h6>Package Distribution</h6>
+          <h6>Package Distribution</h6>
+          <div style={{ width: "300px", height: "300px", margin: "0 auto" }}>
               <Pie data={chartData} />
             </div>
           </div>
