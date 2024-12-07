@@ -240,9 +240,9 @@ function RouteComponent() {
         {/* Pie Chart */}
         <div className="container mt-4">
           <div className="card">
+          <h6>Package Distribution</h6>
           <div style={{ width: "300px", height: "300px", margin: "0 auto" }}>
-            <h6>Package Distribution</h6>
-              <Pie data={chartData} />
+            <Pie data={chartData} />
             </div>
           </div>
         </div>
