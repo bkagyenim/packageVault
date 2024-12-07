@@ -36,12 +36,12 @@ function RouteComponent() {
           const pendingQuery = query(
             deliveryRef,
             where("userId", "==", userData.uid),
-            where("status", "==", "Pending")
+            where("status", "==", "pending")
           );
           const completedQuery = query(
             deliveryRef,
             where("userId", "==", userData.uid),
-            where("status", "==", "Completed")
+            where("status", "==", "completed")
           );
 
           const [pendingSnapshot, completedSnapshot] = await Promise.all([
