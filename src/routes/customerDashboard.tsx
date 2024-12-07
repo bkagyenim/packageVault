@@ -138,7 +138,8 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      {/* SideBar Info */}
+
+      {/* Sidenav Left */}
       <div
         className="offcanvas offcanvas-start"
         id="affanOffcanvas"
@@ -152,28 +153,76 @@ function RouteComponent() {
           data-bs-dismiss="offcanvas"
           aria-label="Close"
         ></button>
+
         <div className="offcanvas-body p-0">
           <div className="sidenav-wrapper">
+            {/* Sidenav Profile */}
             <div className="sidenav-profile bg-gradient">
               <div className="sidenav-style1"></div>
+              {/* User Thumbnail */}
               <div className="user-profile">
                 <img src={ProfileImage} alt="User Thumbnail" />
               </div>
-              <div className="user-info text-center mt-4">
-                <h6 className="user-name mb-0">{user.username}</h6>
-                <span>{user.email}</span>
+              {/* User Info */}
+              <div className="user-info">
+                <h6 className="user-name mb-0">{user?.username}</h6>
+                <span>{user?.email}</span>
               </div>
             </div>
+
+            {/* Sidenav Nav */}
             <ul className="sidenav-nav ps-0">
+              <li>
+                <Link to="/customerDashboard">
+                  <i className="bi bi-house"></i> Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerPending">
+                  <i className="bi bi-folder2-open"></i> Pending
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerCompleted">
+                  <i className="bi bi-folder-check"></i> Collected
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerSupport">
+                  <i className="bi bi-chat-dots"></i> Support
+                </Link>
+              </li>
               <li>
                 <Link to="/login">
                   <i className="bi bi-box-arrow-right"></i> Logout
                 </Link>
               </li>
             </ul>
+
+            {/* Social Info */}
+            <div className="social-info-wrap">
+              <a href="#">
+                <i className="bi bi-facebook"></i>
+              </a>
+              <a href="#">
+                <i className="bi bi-twitter"></i>
+              </a>
+              <a href="#">
+                <i className="bi bi-linkedin"></i>
+              </a>
+            </div>
+
+            {/* Copyright Info */}
+            <div className="copyright-info">
+              <p>
+                <span id="copyrightYear"></span>
+                &copy; Made by <a href="#">Kwadwo</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
+
 
       {/* User Info */}
       <div className="page-content-wrapper">

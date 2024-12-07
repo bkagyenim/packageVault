@@ -242,6 +242,26 @@ function RouteComponent() {
             {/* Sidenav Nav */}
             <ul className="sidenav-nav ps-0">
               <li>
+                <Link to="/customerDashboard">
+                  <i className="bi bi-house"></i> Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerPending">
+                  <i className="bi bi-folder2-open"></i> Pending
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerCompleted">
+                  <i className="bi bi-folder-check"></i> Collected
+                </Link>
+              </li>
+              <li>
+                <Link to="/customerSupport">
+                  <i className="bi bi-chat-dots"></i> Support
+                </Link>
+              </li>
+              <li>
                 <Link to="/login">
                   <i className="bi bi-box-arrow-right"></i> Logout
                 </Link>
@@ -271,6 +291,7 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+
 
       <div className="page-content-wrapper py-3">
         <div className="container">
