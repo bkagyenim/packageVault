@@ -1,10 +1,6 @@
 import Swal from "sweetalert2";
 import { db } from "../firebaseConfig";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { z } from "zod";
-import firebaseConfig from "../firebaseConfig";
 
 
 
@@ -78,3 +74,4 @@ export const handleSave = async (
     });
   }
 };
+
