@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { db } from "../firebaseConfig";
+import { db } from "./firebaseConfig";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 

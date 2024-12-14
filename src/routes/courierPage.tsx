@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { useStore } from "./store";
+import { useStore } from "../store";
 
 export const Route = createFileRoute("/courierPage")({
   component: RouteComponent,

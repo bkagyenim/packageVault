@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as StoreImport } from './routes/store'
 import { Route as StaffVaultImport } from './routes/staffVault'
 import { Route as StaffMessageImport } from './routes/staffMessage'
 import { Route as StaffDashboardImport } from './routes/staffDashboard'
@@ -19,7 +18,6 @@ import { Route as StaffImport } from './routes/staff'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
 import { Route as FooterImport } from './routes/footer'
-import { Route as FirebaseServiceImport } from './routes/firebaseService'
 import { Route as CustomerSupportImport } from './routes/customerSupport'
 import { Route as CustomerPendingImport } from './routes/customerPending'
 import { Route as CustomerDashboardImport } from './routes/customerDashboard'
@@ -31,18 +29,6 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
-
-const VaultServiceRoute = VaultServiceImport.update({
-  id: '/vaultService',
-  path: '/vaultService',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const StoreRoute = StoreImport.update({
-  id: '/store',
-  path: '/store',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const StaffVaultRoute = StaffVaultImport.update({
   id: '/staffVault',
@@ -85,8 +71,6 @@ const FooterRoute = FooterImport.update({
   path: '/footer',
   getParentRoute: () => rootRoute,
 } as any)
-
-
 
 const CustomerSupportRoute = CustomerSupportImport.update({
   id: '/customerSupport',
@@ -209,7 +193,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerSupportImport
       parentRoute: typeof rootRoute
     }
-    
     '/footer': {
       id: '/footer'
       path: '/footer'
@@ -293,7 +276,6 @@ export interface FileRoutesByTo {
   '/customerDashboard': typeof CustomerDashboardRoute
   '/customerPending': typeof CustomerPendingRoute
   '/customerSupport': typeof CustomerSupportRoute
-  '/firebaseService': typeof FirebaseServiceRoute
   '/footer': typeof FooterRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
@@ -301,8 +283,6 @@ export interface FileRoutesByTo {
   '/staffDashboard': typeof StaffDashboardRoute
   '/staffMessage': typeof StaffMessageRoute
   '/staffVault': typeof StaffVaultRoute
-  '/store': typeof StoreRoute
-  '/vaultService': typeof VaultServiceRoute
 }
 
 export interface FileRoutesById {
@@ -316,7 +296,6 @@ export interface FileRoutesById {
   '/customerDashboard': typeof CustomerDashboardRoute
   '/customerPending': typeof CustomerPendingRoute
   '/customerSupport': typeof CustomerSupportRoute
-  '/firebaseService': typeof FirebaseServiceRoute
   '/footer': typeof FooterRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
@@ -324,8 +303,6 @@ export interface FileRoutesById {
   '/staffDashboard': typeof StaffDashboardRoute
   '/staffMessage': typeof StaffMessageRoute
   '/staffVault': typeof StaffVaultRoute
-  '/store': typeof StoreRoute
-  '/vaultService': typeof VaultServiceRoute
 }
 
 export interface FileRouteTypes {
@@ -340,7 +317,6 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
-    | '/firebaseService'
     | '/footer'
     | '/login'
     | '/register'
@@ -348,8 +324,6 @@ export interface FileRouteTypes {
     | '/staffDashboard'
     | '/staffMessage'
     | '/staffVault'
-    | '/store'
-    | '/vaultService'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -361,7 +335,6 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
-    | '/firebaseService'
     | '/footer'
     | '/login'
     | '/register'
@@ -369,8 +342,6 @@ export interface FileRouteTypes {
     | '/staffDashboard'
     | '/staffMessage'
     | '/staffVault'
-    | '/store'
-    | '/vaultService'
   id:
     | '__root__'
     | '/'
@@ -382,7 +353,6 @@ export interface FileRouteTypes {
     | '/customerDashboard'
     | '/customerPending'
     | '/customerSupport'
-    | '/firebaseService'
     | '/footer'
     | '/login'
     | '/register'
@@ -390,8 +360,6 @@ export interface FileRouteTypes {
     | '/staffDashboard'
     | '/staffMessage'
     | '/staffVault'
-    | '/store'
-    | '/vaultService'
   fileRoutesById: FileRoutesById
 }
 
@@ -405,7 +373,6 @@ export interface RootRouteChildren {
   CustomerDashboardRoute: typeof CustomerDashboardRoute
   CustomerPendingRoute: typeof CustomerPendingRoute
   CustomerSupportRoute: typeof CustomerSupportRoute
-  FirebaseServiceRoute: typeof FirebaseServiceRoute
   FooterRoute: typeof FooterRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
@@ -413,8 +380,6 @@ export interface RootRouteChildren {
   StaffDashboardRoute: typeof StaffDashboardRoute
   StaffMessageRoute: typeof StaffMessageRoute
   StaffVaultRoute: typeof StaffVaultRoute
-  StoreRoute: typeof StoreRoute
-  VaultServiceRoute: typeof VaultServiceRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -427,7 +392,6 @@ const rootRouteChildren: RootRouteChildren = {
   CustomerDashboardRoute: CustomerDashboardRoute,
   CustomerPendingRoute: CustomerPendingRoute,
   CustomerSupportRoute: CustomerSupportRoute,
-  FirebaseServiceRoute: FirebaseServiceRoute,
   FooterRoute: FooterRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
@@ -435,8 +399,6 @@ const rootRouteChildren: RootRouteChildren = {
   StaffDashboardRoute: StaffDashboardRoute,
   StaffMessageRoute: StaffMessageRoute,
   StaffVaultRoute: StaffVaultRoute,
-  StoreRoute: StoreRoute,
-  VaultServiceRoute: VaultServiceRoute,
 }
 
 export const routeTree = rootRoute
@@ -458,16 +420,13 @@ export const routeTree = rootRoute
         "/customerDashboard",
         "/customerPending",
         "/customerSupport",
-        "/firebaseService",
         "/footer",
         "/login",
         "/register",
         "/staff",
         "/staffDashboard",
         "/staffMessage",
-        "/staffVault",
-        "/store",
-        "/vaultService"
+        "/staffVault"
       ]
     },
     "/": {
@@ -497,9 +456,6 @@ export const routeTree = rootRoute
     "/customerSupport": {
       "filePath": "customerSupport.tsx"
     },
-    "/firebaseService": {
-      "filePath": "firebaseService.ts"
-    },
     "/footer": {
       "filePath": "footer.tsx"
     },
@@ -520,12 +476,6 @@ export const routeTree = rootRoute
     },
     "/staffVault": {
       "filePath": "staffVault.tsx"
-    },
-    "/store": {
-      "filePath": "store.ts"
-    },
-    "/vaultService": {
-      "filePath": "vaultService.ts"
     }
   }
 }

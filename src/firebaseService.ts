@@ -13,7 +13,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import Swal from "sweetalert2";
-import firebaseConfig from "../firebaseConfig";
+import firebaseConfig from "./firebaseConfig";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

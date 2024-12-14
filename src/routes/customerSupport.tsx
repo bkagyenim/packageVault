@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { listenToAuthChanges, saveContactMessage } from "./firebaseService";
+import { listenToAuthChanges, saveContactMessage } from "../firebaseService";
 import HeaderLogo from "../assets/img/core-img/logo.png";
 import Footer from "./footer";
 import Swal from "sweetalert2";

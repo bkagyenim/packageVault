@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { handleSave } from "./vaultService"; // Adjust the path as necessary
+import { handleSave } from "../vaultService"; // Adjust the path as necessary
 
 export const Route = createFileRoute("/staffVault")({
   component: RouteComponent,
