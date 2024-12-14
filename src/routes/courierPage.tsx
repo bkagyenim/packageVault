@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   getFirestore,
@@ -11,149 +11,98 @@ import {
   updateDoc,
   Timestamp,
 } from "firebase/firestore";
-import Select, { SingleValue } from "react-select";
+import Select from "react-select";
 import Swal from "sweetalert2";
+import { useStore } from "./store";
 
 export const Route = createFileRoute("/courierPage")({
   component: RouteComponent,
 });
 
-type UserOption = {
-  value: string;
-  label: string;
-};
-
-type CompartmentOption = {
-  id: string;
-  compartment: string | number; // Handles both string and number
-};
-
-type State = {
-  users: UserOption[];
-  selectedUser: SingleValue<UserOption>;
-  selectedSize: SingleValue<{ value: string; label: string }>;
-  availableCompartments: CompartmentOption[];
-  selectedCompartment: string;
-  selectedCourier: string;
-};
-
-type Action =
-  | { type: "SET_USERS"; payload: UserOption[] }
-  | { type: "SET_SELECTED_USER"; payload: SingleValue<UserOption> }
-  | { type: "SET_SELECTED_SIZE"; payload: SingleValue<{ value: string; label: string }> }
-  | { type: "SET_AVAILABLE_COMPARTMENTS"; payload: CompartmentOption[] }
-  | { type: "SET_SELECTED_COMPARTMENT"; payload: string }
-  | { type: "SET_SELECTED_COURIER"; payload: string }
-  | { type: "FETCH_USERS" }
-  | { type: "FETCH_COMPARTMENTS" };
-
-const initialState: State = {
-  users: [],
-  selectedUser: null,
-  selectedSize: null,
-  availableCompartments: [],
-  selectedCompartment: "",
-  selectedCourier: "Amazon",
-};
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "SET_USERS":
-      return { ...state, users: action.payload };
-    case "SET_SELECTED_USER":
-      return { ...state, selectedUser: action.payload };
-    case "SET_SELECTED_SIZE":
-      return { ...state, selectedSize: action.payload };
-    case "SET_AVAILABLE_COMPARTMENTS":
-      return { ...state, availableCompartments: action.payload };
-    case "SET_SELECTED_COMPARTMENT":
-      return { ...state, selectedCompartment: action.payload };
-    case "SET_SELECTED_COURIER":
-      return { ...state, selectedCourier: action.payload };
-    default:
-      return state;
-  }
-}
-
-function useActions(dispatch: React.Dispatch<Action>, db: any) {
-  const fetchUsers = async () => {
-    try {
-      const signInMethodCollection = collection(db, "users");
-      const userDocs = await getDocs(signInMethodCollection);
-
-      if (userDocs.empty) {
-        Swal.fire({
-          icon: "warning",
-          title: "No Users Found",
-          text: "No users available in the 'users' collection.",
-        });
-        return;
-      }
-
-      const userList = userDocs.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          value: doc.id,
-          label: data.email || "Unknown Email",
-        };
-      });
-
-      dispatch({ type: "SET_USERS", payload: userList });
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to fetch users. Please try again later.",
-      });
-    }
-  };
-
-  const fetchCompartments = async (selectedSize: SingleValue<{ value: string; label: string }>) => {
-    if (!selectedSize) return;
-
-    try {
-      const vaultsCollection = collection(db, "vault");
-      const compartmentsQuery = query(
-        vaultsCollection,
-        where("packsize", "==", selectedSize.value),
-        where("status", "==", "available")
-      );
-      const compartmentDocs = await getDocs(compartmentsQuery);
-
-      const compartments = compartmentDocs.docs.map((doc) => ({
-        id: doc.id,
-        compartment: doc.data().compartment,
-      }));
-
-      dispatch({ type: "SET_AVAILABLE_COMPARTMENTS", payload: compartments });
-    } catch (error) {
-      console.error("Error fetching compartments:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to fetch compartments. Please try again later.",
-      });
-    }
-  };
-
-  return { fetchUsers, fetchCompartments };
-}
-
 function RouteComponent() {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
-  const { users, selectedUser, selectedSize, availableCompartments, selectedCompartment, selectedCourier } = state;
-
   const db = getFirestore();
-  const { fetchUsers, fetchCompartments } = useActions(dispatch, db);
 
-  React.useEffect(() => {
+  // Zustand state and actions
+  const {
+    users,
+    selectedUser,
+    selectedSize,
+    availableCompartments,
+    selectedCompartment,
+    selectedCourier,
+    setUsers,
+    setSelectedUser,
+    setSelectedSize,
+    setAvailableCompartments,
+    setSelectedCompartment,
+    setSelectedCourier,
+  } = useStore();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userCollection = collection(db, "users");
+        const userDocs = await getDocs(userCollection);
+
+        if (userDocs.empty) {
+          Swal.fire({
+            icon: "warning",
+            title: "No Users Found",
+            text: "No users available in the 'users' collection.",
+          });
+          return;
+        }
+
+        const userList = userDocs.docs.map((doc) => ({
+          value: doc.id,
+          label: doc.data().email || "Unknown Email",
+        }));
+
+        setUsers(userList);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch users. Please try again later.",
+        });
+      }
+    };
+
     fetchUsers();
-  }, []);
+  }, [db, setUsers]);
 
-  React.useEffect(() => {
-    fetchCompartments(selectedSize);
-  }, [selectedSize]);
+  useEffect(() => {
+    const fetchCompartments = async () => {
+      if (!selectedSize) return;
+
+      try {
+        const vaultCollection = collection(db, "vault");
+        const compartmentsQuery = query(
+          vaultCollection,
+          where("packsize", "==", selectedSize.value),
+          where("status", "==", "available")
+        );
+        const compartmentDocs = await getDocs(compartmentsQuery);
+
+        const compartments = compartmentDocs.docs.map((doc) => ({
+          id: doc.id,
+          compartment: doc.data().compartment,
+        }));
+
+        setAvailableCompartments(compartments);
+      } catch (error) {
+        console.error("Error fetching compartments:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch compartments. Please try again later.",
+        });
+      }
+    };
+
+    fetchCompartments();
+  }, [db, selectedSize, setAvailableCompartments]);
 
   const handleSubmit = async () => {
     if (!selectedUser || !selectedSize || !selectedCompartment || !selectedCourier) {
@@ -262,9 +211,7 @@ function RouteComponent() {
                   <select
                     className="form-select"
                     value={selectedCourier}
-                    onChange={(e) =>
-                      dispatch({ type: "SET_SELECTED_COURIER", payload: e.target.value })
-                    }
+                    onChange={(e) => setSelectedCourier(e.target.value)}
                   >
                     <option value="Amazon">Amazon</option>
                     <option value="CanadaPost">CanadaPost</option>
@@ -278,9 +225,7 @@ function RouteComponent() {
                   <Select
                     options={users}
                     value={selectedUser}
-                    onChange={(option) =>
-                      dispatch({ type: "SET_SELECTED_USER", payload: option })
-                    }
+                    onChange={setSelectedUser}
                     placeholder="Search and select a user"
                     isSearchable
                   />
@@ -296,9 +241,7 @@ function RouteComponent() {
                       { value: "Small", label: "Small" },
                     ]}
                     value={selectedSize}
-                    onChange={(option) =>
-                      dispatch({ type: "SET_SELECTED_SIZE", payload: option })
-                    }
+                    onChange={setSelectedSize}
                     placeholder="Select a compartment size"
                     isSearchable
                   />
@@ -309,16 +252,11 @@ function RouteComponent() {
                   <select
                     className="form-select"
                     value={selectedCompartment}
-                    onChange={(e) =>
-                      dispatch({ type: "SET_SELECTED_COMPARTMENT", payload: e.target.value })
-                    }
+                    onChange={(e) => setSelectedCompartment(e.target.value)}
                   >
                     {availableCompartments.length > 0 ? (
                       availableCompartments.map((compartment) => (
-                        <option
-                          key={compartment.id}
-                          value={compartment.compartment}
-                        >
+                        <option key={compartment.id} value={compartment.compartment}>
                           {compartment.compartment}
                         </option>
                       ))
