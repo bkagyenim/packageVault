@@ -3,8 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import Swal from "sweetalert2"; // Import SweetAlert
 import { db } from "../firebaseConfig"; // Firebase Firestore import
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import HeaderLogo from "../assets/img/core-img/logo.png";
-import ProfileImage from "../assets/img/bg-img/2.png";
 
 export const Route = createFileRoute("/staffVault")({
   component: RouteComponent,

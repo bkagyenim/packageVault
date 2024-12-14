@@ -2,7 +2,6 @@ import * as React from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 
 // Import images
-import bgImage from '../assets/img/bg-img/31.png';
 import courierImage from '../assets/img/bg-img/courier.png';
 import contactImage from '../assets/img/bg-img/contact.png';
 import customerImage from '../assets/img/bg-img/customer.png';

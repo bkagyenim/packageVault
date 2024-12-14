@@ -17,63 +17,7 @@ function RegisterComponent() {
   const [phone, setPhone] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  // **Manual Sign-Up**
-  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!email || !username || !phone || !password) {
-      Swal.fire("Error", "All fields are required", "error");
-      return;
-    }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      Swal.fire("Error", "Please enter a valid email address", "error");
-      return;
-    }
-
-    try {
-      const usersRef = collection(db, "users");
-
-      // Check if email, username, or phone number already exists
-      const emailQuery = query(usersRef, where("email", "==", email));
-      const usernameQuery = query(usersRef, where("username", "==", username));
-      const phoneQuery = query(usersRef, where("phone", "==", phone));
-
-      const emailSnapshot = await getDocs(emailQuery);
-      const usernameSnapshot = await getDocs(usernameQuery);
-      const phoneSnapshot = await getDocs(phoneQuery);
-
-      if (!emailSnapshot.empty) {
-        Swal.fire("Error", "Email already exists. Please use a different email.", "error");
-        return;
-      }
-      if (!usernameSnapshot.empty) {
-        Swal.fire("Error", "Username already exists. Please choose a different username.", "error");
-        return;
-      }
-      if (!phoneSnapshot.empty) {
-        Swal.fire("Error", "Phone number already exists. Please use a different phone number.", "error");
-        return;
-      }
-
-      // Add new user to Firebase Authentication and Firestore
-      await createUserWithEmailAndPassword(auth, email, password);
-
-      await addDoc(usersRef, {
-        email,
-        username,
-        phone,
-      });
-
-      Swal.fire("Success", "User registered successfully!", "success").then(() => {
-        navigate({ to: "/login" });
-      });
-    } catch (error) {
-      Swal.fire("Error", "An error occurred during registration", "error");
-      console.error("Error adding user:", error);
-    }
-  };
+ 
 
   // **Google Sign-Up**
   const handleGoogleSignUp = async () => {
