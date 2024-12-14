@@ -2,6 +2,11 @@ import React, { useEffect } from "react";
 import { useStore } from "../store";
 import Select from "react-select";
 import Swal from "sweetalert2";
+import { createFileRoute, Link } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/courierPage")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
   const {
